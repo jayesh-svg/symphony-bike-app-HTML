@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+<body>
+<center><h2><b>Delete Bike Data</b></h2></center>
+<table id="demo" style="border:2px solid black;">
+  <tr>
+    <th> ID </th> <th>Model </th> <th>  Year </th> <th> price </th> <th>manufacturerID </th> <th>color</th>
+
+  </tr>
+ 
+</table>
+
+</br>
+<label>Bike Id </label>
+<select id="bike_id_list" name="bike_id_list">
+  <option selected="true" disabled>Choose Bike Id</option>
+</select>
+<br>
+
+<form method="POST" onsubmit="return check();">
+   
+   
+    <input type="hidden" id = "id" name="id"></input><br>
+
+    <label>Model:</label>
+    <input type="text" id = "model" name="model" placeholder="Model" disabled></input><br>
+    <label>Color:</label>
+    <input type="text" name="color" placeholder="color" id='color' disabled="true"></input><br>
+    <label>Price:</label>
+    <input type="text" id = "price" name="price" placeholder="price" disabled></input><br>
+    <label>Year:</label>
+    <input type="text" name="year" placeholder="year" id='year' disabled="true"></input><br>
+    <label>manufacturer ID:</label>
+    <input type="text" name="manufacturerID" placeholder="manufacturerID" id='manufacturerID' disabled="true"></input><br>
+    <span id='message'></span>
+  
+     <input type="submit" value="Delete">
+</form>
+
+
+  <script src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
+    <script>
+    $( document ).ready(function() {
+       loadDoc();
+    });
+ 
+   
+    </script>
+
+    <script>
+    function check(event) {
+        //document.getElementById('message').innerHTML = "checking";
+        const queryString = window.location.search;
+
+        const urlParams = new URLSearchParams(queryString);
+        const b_id = $( "#bike_id_list" ).val();
+        const url = "http://localhost:8091/symphony/api/bike/delete-bike-details?id="+b_id;
+        const data = {
+              'id' : document.getElementById('id').value
+        };
+        const other_params = {
+            headers : { "content-type" : "application/json; charset=UTF-8" },
+            //body : JSON.stringify(data),
+            method : "DELETE",
+           
+        };
+
+        fetch(url, other_params)
+            .then(function(response) {
+                if (response.ok) {
+                    alert("Record Delete Successfully");
+                    window.location.href = "file:///B:/Jayesh/bike_project/delete.html";
+                } else {
+                    throw new Error("Could not reach the API: " + response.statusText);
+                }
+            })
+        return false;
+    }
+</script>
+
+    <script src='https://kit.fontawesome.com/a076d05399.js'></script>
+
+    <script>
+$(document).ready(function(){
+   $('#bike_id_list').on('change', function() {
+ 
+    //alert("The text has been changed.");
+ 
+  var xhttp = new XMLHttpRequest();
+  var i;
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+    var obj = JSON.parse(this.responseText);
+    console.log(obj);
+//obj.result[0]['id']
+ document.getElementById("id").value = obj.bikeList['id'];
+      document.getElementById("year").value = obj.bikeList['year'];
+     document.getElementById('model').value =obj.bikeList['model'];
+     document.getElementById("price").value = obj.bikeList['price'];
+     document.getElementById('manufacturerID').value =obj.bikeList['manufacturerID'];
+      document.getElementById('color').value =obj.bikeList['color'];
+    // var i;
+// for (i = 0; i < (obj.result).length; i++) {
+//   document.getElementById("demo").innerHTML += '<tr><td>' + obj.result[i]['id'] + '</td><td>' + obj.result[i]['model'] + '</td><td>' + obj.result[i]['year'] +  '</td><td>' + obj.result[i]['price'] +  '</td><td>' + obj.result[i]['manufacturerID'] +  '</td><td>' + obj.result[i]['color'] + '</td><td>' + '<a href=edit.html?val='+obj.result[i]['id']+'>'+ '<i class="fas fa-edit"></i></a>'+ '</td></tr>';
+// }
+    }
+  };
+
+  const b_id = $( "#bike_id_list" ).val();
+  xhttp.open("GET", "http://localhost:8091/symphony/api/bike/filterByBikeId?bikeId="+b_id, true);
+  xhttp.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+  xhttp.send("");
+ });
+});
+
+</script>
+<script>
+function loadDoc() {
+  var xhttp = new XMLHttpRequest();
+  var i;
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+    var obj = JSON.parse(this.responseText);
+//obj.result[0]['id']
+    // document.getElementById("demo").innerHTML =(obj.result).length;
+    var i;
+for (i = 0; i < (obj.result).length; i++) {
+  document.getElementById("demo").innerHTML += '<tr><td>' + obj.result[i]['id'] + '</td><td>' + obj.result[i]['model'] + '</td><td>' + obj.result[i]['year'] +  '</td><td>' + obj.result[i]['price'] +  '</td><td>' + obj.result[i]['manufacturerID'] +  '</td><td>' + obj.result[i]['color'] + '</td></tr>';
+}
+
+for (i = 0; i < (obj.result).length; i++) {
+  document.getElementById("bike_id_list").innerHTML += '<option value= ' +  obj.result[i]['id'] +'> '+ obj.result[i]['id']+' </option>';
+}
+
+    }
+  };
+  xhttp.open("GET", "http://localhost:8091/symphony/api/bike/all-bike-details", true);
+  xhttp.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+  xhttp.send("");
+}
+</script>
+
+<style>
+  
+  input[type=text], select {
+  width: 20%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+input[type=submit] {
+  width: 20%;
+  background-color: #4CAF50;
+  color: white;
+  padding: 14px 20px;
+  margin: 8px 0;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+input[type=submit]:hover {
+  background-color: #45a049;
+}
+
+div {
+  border-radius: 5px;
+  background-color: #f2f2f2;
+  padding: 20px;
+}
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 70%;
+}
+
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+tr:nth-child(even) {
+  background-color: #dddddd;
+}
+</style>
+</body>
+</html>
